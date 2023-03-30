@@ -18,3 +18,5 @@ RUN git clone https://github.com/joske/lvim.git $HOME/.config/lvim
 
 RUN echo "export PATH=$PATH:$HOME/.local/bin" >> $HOME/.bashrc
 
+RUN echo "alias vim=lvim" >> $HOME/.bashrc
+
