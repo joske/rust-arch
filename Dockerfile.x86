@@ -1,6 +1,6 @@
 FROM archlinux
 
-RUN pacman -Syu --noconfirm openssl-1.1 rustup vim neovim git fish fisher zip unzip gzip lazygit clang llvm rust-analyzer inetutils sccache
+RUN pacman -Syu --noconfirm openssl-1.1 openssl rustup vim neovim git fish fisher zip unzip gzip lazygit clang llvm rust-analyzer inetutils sccache
 
 RUN rustup install stable
 
