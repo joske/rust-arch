@@ -1,22 +1,16 @@
 FROM archlinux
 
-RUN pacman -Syu --noconfirm openssl-1.1 pkgconf make rustup vim neovim git fish fisher zip unzip gzip lazygit clang llvm rust-analyzer inetutils sccache
-
-RUN rustup install stable
+RUN pacman -Syu --noconfirm && pacman -S --noconfirm openssl-1.1 rustup neovim git fish fisher zip unzip gzip lazygit clang llvm lldb rust-analyzer inetutils sccache npm ruby python
 
 COPY config.toml /root/.cargo/config.toml
 
-RUN cargo install cargo-udeps --locked
+COPY setup-rust.sh setup-vim.sh ./
 
-RUN rustup install nightly
+RUN ./setup-rust.sh
 
-RUN LV_BRANCH='release-1.2/neovim-0.8' bash <(curl -s https://raw.githubusercontent.com/lunarvim/lunarvim/fc6873809934917b470bff1b072171879899a36b/utils/installer/install.sh)
+RUN ./setup-vim.sh
 
-RUN rm -rf $HOME/.config/lvim
+RUN mkdir /app
 
-RUN git clone https://github.com/joske/lvim.git $HOME/.config/lvim
-
-RUN echo "export PATH=$PATH:$HOME/.local/bin" >> $HOME/.bashrc
-
-RUN echo "alias vim=lvim" >> $HOME/.bashrc
+WORKDIR /app
 
