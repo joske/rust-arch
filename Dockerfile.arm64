@@ -1,6 +1,9 @@
 FROM menci/archlinuxarm:base-devel
 
-RUN pacman -Syu --noconfirm && pacman -S --noconfirm openssl-1.1 rustup neovim git fish fisher zip unzip gzip lazygit clang llvm lldb rust-analyzer inetutils sccache npm ruby python
+RUN pacman -Syu --noconfirm && \
+  pacman -S --noconfirm \
+  openssl pkg-config make rustup neovim git fish fisher zip unzip gzip lazygit \
+  clang llvm lldb rust-analyzer inetutils sccache npm ruby python bottom gdu
 
 COPY config.toml /root/.cargo/config.toml
 
