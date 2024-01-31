@@ -1,19 +1,28 @@
 FROM menci/archlinuxarm:base-devel
 
+ENV USER="rust"
+
 RUN pacman -Syu --noconfirm && \
   pacman -S --noconfirm \
-  openssl pkg-config make rustup neovim git fish fisher zip unzip gzip lazygit \
-  clang llvm lldb rust-analyzer inetutils sccache npm ruby python bottom gdu
+  openssl pkg-config make rustup neovim git fish fisher zip unzip gzip lazygit yarn \
+  clang llvm lldb rust-analyzer inetutils sccache npm ruby python bottom gdu sudo
 
-COPY config.toml /root/.cargo/config.toml
+# create a non root user
+RUN groupadd $USER
+RUN useradd -g $USER -G root -s /bin/bash $USER
+RUN mkdir -p /home/$USER
 
-COPY setup-rust.sh setup-vim.sh ./
+COPY config.toml /home/$USER/.cargo/config.toml
+COPY setup-rust.sh setup-vim.sh /home/$USER/
 
-RUN ./setup-rust.sh
+RUN chown -R $USER:$USER /home/$USER /home/$USER/.cargo
 
-RUN ./setup-vim.sh
+# allow sudo without password
+RUN echo "$USER ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers
 
-RUN mkdir /app
+USER $USER
+WORKDIR /home/$USER
 
-WORKDIR /app
+RUN ./setup-rust.sh && ./setup-vim.sh && rm setup-rust.sh setup-vim.sh
+
 
