@@ -1,15 +1,16 @@
-FROM archlinux
+FROM archlinux:latest
 
 ENV USER="rust"
 
+RUN rm -rf /etc/pacman.d/gnupg/* && pacman-key --init && pacman-key --populate archlinux
+RUN pacman -Sy --noconfirm archlinux-keyring
 RUN pacman -Syu --noconfirm && \
   pacman -S --noconfirm \
   openssl pkg-config make rustup neovim git fish fisher zip unzip gzip lazygit \
   clang llvm lldb rust-analyzer inetutils sccache npm ruby python bottom gdu \
-  fzf ripgrep tmux yarn node npm
+  fzf ripgrep tmux yarn nodejs npm
 
-COPY setup-user.sh setup-rust.sh setup-vim.sh setup-fish.sh ./
-
+COPY setup-user.sh .
 RUN ./setup-user.sh
 
 USER $USER
@@ -17,6 +18,8 @@ WORKDIR /home/$USER
 
 # tmux
 COPY tmux.conf /home/$USER/.tmux.conf
+
+COPY setup-rust.sh setup-vim.sh setup-fish.sh ./
 
 RUN ./setup-fish.sh
 
