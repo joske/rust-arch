@@ -1,19 +1,30 @@
-FROM menci/archlinuxarm:base-devel
+# FROM menci/archlinuxarm:base-devel
+FROM agners/archlinuxarm
+
+ENV USER="rust"
 
 RUN pacman -Syu --noconfirm && \
   pacman -S --noconfirm \
   openssl pkg-config make rustup neovim git fish fisher zip unzip gzip lazygit \
-  clang llvm lldb rust-analyzer inetutils sccache npm ruby python bottom gdu
+  clang llvm lldb rust-analyzer inetutils sccache npm ruby python bottom gdu \
+  fzf ripgrep tmux yarn node npm
 
-COPY config.toml /root/.cargo/config.toml
+COPY setup-user.sh setup-rust.sh setup-vim.sh setup-fish.sh ./
 
-COPY setup-rust.sh setup-vim.sh ./
+RUN ./setup-user.sh
+
+USER $USER
+WORKDIR /home/$USER
+
+# tmux
+COPY tmux.conf /home/$USER/.tmux.conf
+
+RUN ./setup-fish.sh
 
 RUN ./setup-rust.sh
 
+COPY config.toml /root/.cargo/config.toml
+
 RUN ./setup-vim.sh
 
-RUN mkdir /app
-
-WORKDIR /app
-
+RUN rm ./setup-*
