@@ -2,9 +2,12 @@ FROM menci/archlinuxarm:base-devel
 
 ENV USER="rust"
 
-RUN rm -rf /etc/pacman.d/gnupg/* && pacman-key --init && pacman-key --populate archlinux
-RUN pacman -Sy --noconfirm archlinux-keyring
-RUN pacman -Syu --noconfirm && \
+RUN rm -rf /etc/pacman.d/gnupg/* && pacman-key --init
+RUN echo "allow-weak-key-signatures" >> /etc/pacman.d/gnupg/gpg.conf
+RUN pacman-key --populate archlinuxarm
+RUN pacman -Syy --noconfirm archlinuxarm-keyring
+RUN sed -i -e 's~#IgnorePkg.*~IgnorePkg = filesystem~g' '/etc/pacman.conf'
+RUN pacman -Syyu --noconfirm && \
   pacman -S --noconfirm \
   openssl pkg-config make rustup neovim git fish fisher zip unzip gzip lazygit \
   clang llvm lldb rust-analyzer inetutils sccache npm ruby python bottom gdu \
