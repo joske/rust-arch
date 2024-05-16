@@ -8,7 +8,7 @@ RUN pacman -Syu --noconfirm && \
   pacman -S --noconfirm \
   openssl pkg-config make rustup neovim git fish fisher zip unzip gzip lazygit \
   clang llvm lldb rust-analyzer inetutils sccache npm ruby python bottom gdu \
-  fzf ripgrep tmux yarn nodejs npm
+  fzf ripgrep tmux yarn nodejs npm protobuf
 
 COPY setup-user.sh .
 RUN ./setup-user.sh
