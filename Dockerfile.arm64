@@ -20,7 +20,7 @@ USER $USER
 WORKDIR /home/$USER
 
 # tmux
-COPY tmux.conf /home/$USER/.tmux.conf
+COPY --chown=$USER:$USER tmux.conf /home/$USER/.tmux.conf
 
 COPY setup-rust.sh setup-vim.sh setup-fish.sh ./
 
@@ -28,7 +28,7 @@ RUN ./setup-fish.sh
 
 RUN ./setup-rust.sh
 
-COPY config.toml /home/$USER/.cargo/config.toml
+COPY --chown=$USER:$USER config.toml /home/$USER/.cargo/config.toml
 
 RUN ./setup-vim.sh
 
